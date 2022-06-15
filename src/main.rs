@@ -2,6 +2,7 @@ use rand::seq::SliceRandom;
 use serde_json;
 use serde_json::Value;
 use std::fs;
+use textwrap;
 
 fn main() {
     let file = fs::read_to_string("quotes.json").expect("Provide a valid file");
@@ -10,8 +11,14 @@ fn main() {
         Value::Array(vec_data) => vec_data,
         _ => unreachable!(),
     };
+    let num_lines = 60;
     let rand_obj = arr.choose(&mut rand::thread_rng());
-    println!("{}", &rand_obj.unwrap()["text"]);
+    let text = &rand_obj.unwrap()["text"].to_owned().to_string();
+    let text = textwrap::wrap(text, num_lines);
+
+    for i in &text {
+        println!("{}", i);
+    }
     println!("\n");
     println!("- {}", &rand_obj.unwrap()["author"]);
 }
